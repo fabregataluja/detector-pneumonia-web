@@ -1,0 +1,272 @@
+/* COLORS PRINCIPALS: els pots modificar */
+:root {
+  --color-principal: #397bad;
+  --color-principal-clar: #eaf4fb;
+  --color-fons: #f4f7f9;
+  --color-targeta: #ffffff;
+  --color-text: #263238;
+  --color-text-secundari: #60717b;
+  --color-avis: #fff5dc;
+  --color-avis-text: #72520b;
+  --color-error: #b83a3a;
+  --color-correcte: #278267;
+}
+
+/* CONFIGURACIÓ GENERAL */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 35px 20px;
+  background-color: var(--color-fons);
+  color: var(--color-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.detector {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* CAPÇALERA */
+
+.detector-header {
+  margin-bottom: 28px;
+  padding: 32px;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      135deg,
+      #18384e,
+      var(--color-principal)
+    );
+  color: white;
+  box-shadow: 0 10px 30px rgba(20, 55, 75, 0.15);
+}
+
+.etiqueta {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.detector-header h1 {
+  margin: 0;
+  font-size: 38px;
+}
+
+.detector-header p {
+  max-width: 720px;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+#model-status {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.12);
+  font-size: 14px;
+}
+
+/* ZONA PRINCIPAL */
+
+.zona-analisi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.zona-carrega,
+.zona-resultat {
+  padding: 25px;
+  border: 1px solid #dce4e8;
+  border-radius: 18px;
+  background-color: var(--color-targeta);
+  box-shadow: 0 8px 25px rgba(34, 60, 75, 0.08);
+}
+
+/* SELECTOR D’IMATGE */
+
+.selector-imatge {
+  min-height: 250px;
+  padding: 30px;
+  border: 2px dashed #9db7c6;
+  border-radius: 14px;
+  background-color: #f9fcfd;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  text-align: center;
+  transition: 0.2s;
+}
+
+.selector-imatge:hover {
+  border-color: var(--color-principal);
+  background-color: var(--color-principal-clar);
+}
+
+.selector-imatge .icona {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background-color: var(--color-principal);
+  color: white;
+  font-size: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selector-imatge strong {
+  font-size: 18px;
+}
+
+.selector-imatge span:last-child {
+  color: var(--color-text-secundari);
+  font-size: 14px;
+}
+
+/* PREVISUALITZACIÓ */
+
+.previsualitzacio {
+  margin-top: 18px;
+  text-align: center;
+}
+
+#imatge-preview {
+  max-width: 100%;
+  max-height: 350px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+/* BOTÓ */
+
+#boto-analitzar {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--color-principal);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#boto-analitzar:hover:not(:disabled) {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+}
+
+#boto-analitzar:disabled {
+  background-color: #b8c4ca;
+  cursor: not-allowed;
+}
+
+/* RESULTAT */
+
+.zona-resultat h2 {
+  margin-top: 0;
+  color: var(--color-text);
+}
+
+#resultat-buit {
+  min-height: 280px;
+  color: var(--color-text-secundari);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+#resultat {
+  margin-top: 25px;
+  padding: 22px;
+  border-radius: 14px;
+  background-color: var(--color-principal-clar);
+}
+
+#classificacio {
+  margin: 7px 0 24px;
+  color: var(--color-principal);
+  font-size: 32px;
+}
+
+.barra {
+  width: 100%;
+  height: 12px;
+  margin: 15px 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #d5e0e5;
+}
+
+#barra-puntuacio {
+  width: 0;
+  height: 100%;
+  border-radius: 10px;
+  background-color: var(--color-principal);
+  transition: width 0.5s;
+}
+
+#interpretacio {
+  color: var(--color-text-secundari);
+  line-height: 1.5;
+}
+
+/* AVÍS FINAL */
+
+footer {
+  margin-top: 24px;
+  padding: 18px 22px;
+  border-left: 5px solid #e3b341;
+  border-radius: 8px;
+  background-color: var(--color-avis);
+  color: var(--color-avis-text);
+  line-height: 1.5;
+}
+
+/* ADAPTACIÓ A MÒBILS */
+
+@media (max-width: 800px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .detector-header {
+    padding: 24px;
+  }
+
+  .detector-header h1 {
+    font-size: 30px;
+  }
+
+  .zona-analisi {
+    grid-template-columns: 1fr;
+  }
+
+  .selector-imatge {
+    min-height: 220px;
+  }
+}
