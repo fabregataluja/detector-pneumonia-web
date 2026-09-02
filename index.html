@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="ca">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+  >
+
+  <title>Detector de pneumònia amb IA</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+
+  <script src="script.js" defer></script>
+
+</head>
+
+<body>
+
+  <main class="detector">
+
+    <header class="detector-header">
+
+      <p class="etiqueta">Model d’intel·ligència artificial</p>
+
+      <h1>Analitza una radiografia</h1>
+
+      <p>
+
+        Carrega una radiografia de tòrax perquè el model la classifiqui
+
+        com a normal o amb signes compatibles amb pneumònia.
+
+      </p>
+
+      <p id="model-status">
+
+        Carregant el model...
+
+      </p>
+
+    </header>
+
+    <section class="zona-analisi">
+
+      <div class="zona-carrega">
+
+        <label for="imatge-input" class="selector-imatge">
+
+          <span class="icona">＋</span>
+
+          <strong>Selecciona una radiografia</strong>
+
+          <span>
+
+            Prem aquí per carregar una imatge JPG o PNG
+
+          </span>
+
+        </label>
+
+        <input
+
+          type="file"
+
+          id="imatge-input"
+
+          accept="image/jpeg, image/png"
+
+          hidden
+
+        >
+
+        <div class="previsualitzacio">
+
+          <img
+
+            id="imatge-preview"
+
+            alt="Previsualització de la radiografia"
+
+            hidden
+
+          >
+
+        </div>
+
+        <button id="boto-analitzar" disabled>
+
+          Analitza la radiografia
+
+        </button>
+
+      </div>
+
+      <div class="zona-resultat">
+
+        <h2>Resultat del model</h2>
+
+        <div id="resultat-buit">
+
+          <p>
+
+            El resultat apareixerà aquí després d’analitzar una radiografia.
+
+          </p>
+
+        </div>
+
+        <div id="resultat" hidden>
+
+          <p>Classificació:</p>
+
+          <h3 id="classificacio"></h3>
+
+          <p>
+
+            Puntuació de pneumònia:
+
+            <strong id="puntuacio"></strong>
+
+          </p>
+
+          <div class="barra">
+
+            <div id="barra-puntuacio"></div>
+
+          </div>
+
+          <p id="interpretacio"></p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer>
+
+      <p>
+
+        <strong>Avís:</strong> aquest prototip té una finalitat educativa
+
+        i no constitueix un diagnòstic mèdic.
+
+      </p>
+
+    </footer>
+
+  </main>
+
+</body>
+
+</html>
