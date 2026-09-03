@@ -298,29 +298,21 @@ function mostrarResultat(valor) {
       "com a normal.";
 
   // Resultat situat a prop del llindar
-  } else {
-    classificacio.textContent =
-      "RESULTAT INCERT";
+ } else {
+  classificacio.textContent =
+    "RESULTAT INCERT";
 
-    classificacio.style.color = "#8a6d1d";
+  classificacio.style.color = "#8a6d1d";
 
-    barraPuntuacio.style.backgroundColor =
-      "#d6aa35";
+  barraPuntuacio.style.backgroundColor =
+    "#d6aa35";
 
-    const llindarPercentatge =
-      (LLINDAR_ORIGINAL * 100)
-        .toFixed(2)
-        .replace(".", ",");
-
-    interpretacio.textContent =
-      "La puntuació està a prop del llindar " +
-      "original del model (" +
-      llindarPercentatge +
-      " %). No es pot obtenir una classificació " +
-      "prou clara.";
-  }
+  interpretacio.textContent =
+    "No es pot obtenir una classificació prou clara. " +
+    "Aquest resultat no permet confirmar ni descartar " +
+    "la presència de pneumònia. Per obtenir un diagnòstic " +
+    "vàlid, cal consultar un professional sanitari.";
 }
-
 
 // =====================================================
 // INICIAR L'APLICACIÓ
