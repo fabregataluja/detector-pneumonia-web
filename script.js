@@ -34,7 +34,6 @@ async function carregarModel() {
         await tf.ready();
         model = await tf.loadLayersModel(RUTA_MODEL);
 
-        // Predicció buida per inicialitzar el model al navegador.
         const entradaProva = tf.zeros([1, MIDA_IMATGE, MIDA_IMATGE, 3]);
         const sortidaProva = model.predict(entradaProva);
 
@@ -122,8 +121,8 @@ inputImatge.addEventListener("change", () => {
 
 function prepararImatge() {
     return tf.tidy(() => {
-        // El model web conserva la mateixa transformació que el model final:
-        // píxels [0,255] -> [0,1] aquí, i després x*2-1 dins del model.
+        // El model web aplica internament x*2-1.
+        // Per això aquí només transformem els píxels de [0,255] a [0,1].
         return tf.browser
             .fromPixels(previsualitzacio, 3)
             .resizeBilinear([MIDA_IMATGE, MIDA_IMATGE])
@@ -134,7 +133,9 @@ function prepararImatge() {
 }
 
 botoAnalitzar.addEventListener("click", async () => {
-    if (!model || !imatgePreparada) return;
+    if (!model || !imatgePreparada) {
+        return;
+    }
 
     botoAnalitzar.disabled = true;
     botoAnalitzar.textContent = "Analitzant...";
@@ -158,7 +159,9 @@ botoAnalitzar.addEventListener("click", async () => {
         console.error("Error durant l'anàlisi:", error);
         alert("S'ha produït un error durant l'anàlisi. Torna-ho a provar.");
     } finally {
-        if (entrada) entrada.dispose();
+        if (entrada) {
+            entrada.dispose();
+        }
 
         if (prediccio) {
             if (Array.isArray(prediccio)) {
