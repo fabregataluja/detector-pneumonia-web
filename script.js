@@ -1,15 +1,15 @@
 const RUTA_MODEL = "./model/model.json";
 const MIDA_IMATGE = 224;
 
-// Franja orientativa per mostrar un resultat incert
-const LLINDAR_INFERIOR = 0.40;
-const LLINDAR_SUPERIOR = 0.60;
+// Zona experimental d'incertesa definida a partir del conjunt de validació.
+// No és un interval de confiança clínic.
+const LLINDAR_NORMAL = 0.053;
+const LLINDAR_PNEUMONIA = 0.813;
 
 let model = null;
 let imatgePreparada = false;
 let urlTemporal = null;
 
-// Elements de la pàgina
 const estatModel = document.getElementById("model-status");
 const inputImatge = document.getElementById("imatge-input");
 const previsualitzacio = document.getElementById("imatge-preview");
@@ -34,7 +34,7 @@ async function carregarModel() {
         await tf.ready();
         model = await tf.loadLayersModel(RUTA_MODEL);
 
-        // Primera predicció buida per preparar el model
+        // Predicció buida per inicialitzar el model al navegador.
         const entradaProva = tf.zeros([1, MIDA_IMATGE, MIDA_IMATGE, 3]);
         const sortidaProva = model.predict(entradaProva);
 
@@ -122,6 +122,8 @@ inputImatge.addEventListener("change", () => {
 
 function prepararImatge() {
     return tf.tidy(() => {
+        // El model web conserva la mateixa transformació que el model final:
+        // píxels [0,255] -> [0,1] aquí, i després x*2-1 dins del model.
         return tf.browser
             .fromPixels(previsualitzacio, 3)
             .resizeBilinear([MIDA_IMATGE, MIDA_IMATGE])
@@ -132,9 +134,7 @@ function prepararImatge() {
 }
 
 botoAnalitzar.addEventListener("click", async () => {
-    if (!model || !imatgePreparada) {
-        return;
-    }
+    if (!model || !imatgePreparada) return;
 
     botoAnalitzar.disabled = true;
     botoAnalitzar.textContent = "Analitzant...";
@@ -151,18 +151,14 @@ botoAnalitzar.addEventListener("click", async () => {
             : prediccio;
 
         const valors = await tensorSortida.data();
-        const probabilitat = Number(valors[0]);
+        const score = Number(valors[0]);
 
-        mostrarResultat(probabilitat);
+        mostrarResultat(score);
     } catch (error) {
         console.error("Error durant l'anàlisi:", error);
-        alert(
-            "S'ha produït un error durant l'anàlisi. Torna-ho a provar."
-        );
+        alert("S'ha produït un error durant l'anàlisi. Torna-ho a provar.");
     } finally {
-        if (entrada) {
-            entrada.dispose();
-        }
+        if (entrada) entrada.dispose();
 
         if (prediccio) {
             if (Array.isArray(prediccio)) {
@@ -177,38 +173,38 @@ botoAnalitzar.addEventListener("click", async () => {
     }
 });
 
-function mostrarResultat(probabilitat) {
-    const percentatge = probabilitat * 100;
+function mostrarResultat(score) {
+    const percentatge = score * 100;
 
     puntuacio.textContent =
         percentatge.toLocaleString("ca-ES", {
             minimumFractionDigits: 1,
             maximumFractionDigits: 1
-        }) + " %";
+        }) + " / 100";
 
     barraPuntuacio.style.width = `${Math.min(percentatge, 100)}%`;
 
-    if (probabilitat >= LLINDAR_SUPERIOR) {
-        classificacio.textContent = "PNEUMÒNIA";
-        classificacio.style.color = "#b86600";
-        barraPuntuacio.style.backgroundColor = "#df922f";
-
-        interpretacio.textContent =
-            "El model ha detectat característiques compatibles amb pneumònia. Aquest resultat és orientatiu i no substitueix el diagnòstic d'un professional sanitari.";
-    } else if (probabilitat <= LLINDAR_INFERIOR) {
+    if (score < LLINDAR_NORMAL) {
         classificacio.textContent = "NORMAL";
-        classificacio.style.color = "#16734a";
-        barraPuntuacio.style.backgroundColor = "#2b9b6c";
+        classificacio.className = "resultat-normal";
+        barraPuntuacio.className = "barra-normal";
 
         interpretacio.textContent =
-            "El model no ha detectat característiques clares compatibles amb pneumònia. Aquest resultat és orientatiu i no substitueix el diagnòstic d'un professional sanitari.";
+            "La puntuació del model queda dins la zona classificada com a normal. És un resultat experimental i no substitueix la valoració d'un professional sanitari.";
+    } else if (score >= LLINDAR_PNEUMONIA) {
+        classificacio.textContent = "PNEUMÒNIA";
+        classificacio.className = "resultat-pneumonia";
+        barraPuntuacio.className = "barra-pneumonia";
+
+        interpretacio.textContent =
+            "El model ha detectat patrons que associa amb pneumònia. La puntuació no és una probabilitat clínica ni constitueix un diagnòstic.";
     } else {
         classificacio.textContent = "RESULTAT INCERT";
-        classificacio.style.color = "#7a5a00";
-        barraPuntuacio.style.backgroundColor = "#d4a72c";
+        classificacio.className = "resultat-incert";
+        barraPuntuacio.className = "barra-incert";
 
         interpretacio.textContent =
-            "No es pot obtenir una classificació prou clara. Aquest resultat no permet confirmar ni descartar la presència de pneumònia. Per obtenir un diagnòstic vàlid, cal consultar un professional sanitari.";
+            "La puntuació queda dins la zona experimental d'incertesa definida durant la validació. El model no dona una classificació prou clara.";
     }
 
     resultatBuit.hidden = true;
