@@ -1,10 +1,8 @@
 const RUTA_MODEL = "./model/model.json";
 const MIDA_IMATGE = 224;
 
-// Zona experimental d'incertesa definida a partir del conjunt de validació.
-// No és un interval de confiança clínic.
-const LLINDAR_NORMAL = 0.053;
-const LLINDAR_PNEUMONIA = 0.813;
+// Llindar binari seleccionat amb el conjunt de validació.
+const LLINDAR_PNEUMONIA = 0.8293;
 
 let model = null;
 let imatgePreparada = false;
@@ -187,14 +185,7 @@ function mostrarResultat(score) {
 
     barraPuntuacio.style.width = `${Math.min(percentatge, 100)}%`;
 
-    if (score < LLINDAR_NORMAL) {
-        classificacio.textContent = "NORMAL";
-        classificacio.className = "resultat-normal";
-        barraPuntuacio.className = "barra-normal";
-
-        interpretacio.textContent =
-            "La puntuació del model queda dins la zona classificada com a normal. És un resultat experimental i no substitueix la valoració d'un professional sanitari.";
-    } else if (score >= LLINDAR_PNEUMONIA) {
+    if (score >= LLINDAR_PNEUMONIA) {
         classificacio.textContent = "PNEUMÒNIA";
         classificacio.className = "resultat-pneumonia";
         barraPuntuacio.className = "barra-pneumonia";
@@ -202,12 +193,12 @@ function mostrarResultat(score) {
         interpretacio.textContent =
             "El model ha detectat patrons que associa amb pneumònia. La puntuació no és una probabilitat clínica ni constitueix un diagnòstic.";
     } else {
-        classificacio.textContent = "RESULTAT INCERT";
-        classificacio.className = "resultat-incert";
-        barraPuntuacio.className = "barra-incert";
+        classificacio.textContent = "NORMAL";
+        classificacio.className = "resultat-normal";
+        barraPuntuacio.className = "barra-normal";
 
         interpretacio.textContent =
-            "La puntuació queda dins la zona experimental d'incertesa definida durant la validació. El model no dona una classificació prou clara.";
+            "La puntuació del model queda per sota del llindar establert per a pneumònia. És un resultat experimental i no substitueix la valoració d'un professional sanitari.";
     }
 
     resultatBuit.hidden = true;
